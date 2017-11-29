@@ -1,0 +1,49 @@
+body {
+    font-size: 20pt;
+}
+
+header {
+	text-align: center;
+	border-style: outset;
+}
+
+header p {
+	font-style: italic;
+}
+
+table {
+	table-layout: fixed;
+	width: 100%;
+}
+
+/* if someone makes a really big title or whatever,
+   we don't want it to widen the page
+*/
+table td {
+	width: 20%;
+	word-wrap: break-word;
+}
+
+i {
+	font-size: 25pt;
+	color: DarkGreen;
+	text-align: center;
+}
+
+ul {
+	height: 400px;
+	width: 800px;
+	border: 1px solid #ccc;
+	font: 16px/26px Georgia, Garamond, Serif;
+	overflow: auto;
+	text-align: center;
+}
+
+label {
+	display: inline;
+}
+
+label:after {
+	content: "\a"; /* newline */
+	white-space: pre;
+}

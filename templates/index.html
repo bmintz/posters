@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<title>
+		Poster!
+	</title>
+	<link rel="stylesheet" href="/css/styles.css" type="text/css" />
+</head>
+<body>
+	<header>
+		<h1>Posters!</h1>
+		<p>A Posterboard Website</p>
+	</header>
+	<a href="/create">Create a new poster</a>
+	<form action="/search">
+		<label>
+			Latitude
+			<input type="number" name="lat">
+		</label>
+		<label>
+			Longitude
+			<input type="number" name="long"/>
+		</label>
+		<label>
+			Search radius
+			<input type="number" name="radius"/>
+		</label>
+		<input type="submit" value="Search"/>
+	</form>
+
+	<h2>Nearby Posters</h2>
+	{% include 'poster_list.html' %}
+</body>
+</html>

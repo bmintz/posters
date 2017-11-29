@@ -1,0 +1,18 @@
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Latitude</th>
+		<th>Longitude</th>
+		<th>Author</th>
+		<th>Date published</th>
+	</tr>
+	{% for item in items %}
+		<tr>
+			<td><a href="/poster/{{item.id}}">{{item.title}}</a></td>
+			<td>{{item.lat}}</td>
+			<td>{{item.long}}</td>
+			<td>{{item.author}}</td>
+			<td>{{item.date}}</td>
+		</tr>
+	{% endfor %}
+</table>

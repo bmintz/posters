@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<title>View Poster</title>
+	<link rel="stylesheet" href="/css/styles.css" type="text/css" />
+</head>
+<body>
+	<header><h2>Poster</h2></header>
+	<h3>{{poster.title}}</h3>
+	Location: {{poster.lat}}, {{poster.long}}<br>
+	Posted by {{poster.author}} on {{poster.date}}<br>
+	<p>{{poster.text}}</p>
+	{% set ns = namespace(owns_poster = false) %}
+	{% for token in session['tokens'] %}
+		{% if poster.validate(poster.id, token) %}
+			{% set ns.owns_poster = True %}
+		{% endif %}
+	{% endfor %}
+	{% if ns.owns_poster %}
+		<a href="/edit/{{poster.id}}?token={{poster.token}}">Edit this poster</a>
+	{% endif %}
+		<a href="/">Return to Main Page</a>
+</body>
