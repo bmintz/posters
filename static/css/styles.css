@@ -43,7 +43,11 @@ label {
 	display: inline;
 }
 
-label:after {
+label:not(.no-label-br):after {
 	content: "\a"; /* newline */
 	white-space: pre;
+}
+
+label #units:after {
+	content: "";
 }

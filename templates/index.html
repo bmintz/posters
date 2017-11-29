@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<title>
-		Poster!
-	</title>
+	<title>Posters!</title>
 	<link rel="stylesheet" href="/css/styles.css" type="text/css" />
 </head>
 <body>
@@ -21,13 +19,23 @@
 			Longitude
 			<input type="number" name="long"/>
 		</label>
-		<label>
+		<!-- no line break after this one, so use -->
+		<label class="no-label-br">
 			Search radius
 			<input type="number" name="radius"/>
 		</label>
+		<label>
+			<select name="unit">
+				<option value="km">Kilometers</option>
+				<option value="mi">Miles</option>
+				<option value="m">Meters</option>
+				<option value="feet">Feet</option>
+				<!-- we respect sailors around here too -->
+				<option value="nm">Nautical Miles</option>
+			</select>
+		</label>
 		<input type="submit" value="Search"/>
 	</form>
-
 	<h2>Nearby Posters</h2>
 	{% include 'poster_list.html' %}
 </body>

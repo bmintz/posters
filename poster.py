@@ -6,6 +6,7 @@ from datetime import datetime as _datetime
 import json as _json
 
 import geopy as _geopy
+_distance = _geopy.distance.distance
 
 import util as _util
 
@@ -52,6 +53,9 @@ class Poster:
 		self.last_modified = None
 		
 		# db.append(self)
+	
+	def distance(self, lat, long):
+		return _distance((self.lat, self.long), (lat, long))
 	
 	def time_here(self):
 		return time_at(self.lat, self.long)
@@ -124,6 +128,13 @@ class Database(list):
 				return poster
 			else:
 				raise InvalidTokenError
+	
+	def search(self, lat, long, radius, unit):
+		for poster in map(Poster.from_dict, self):
+			distance = getattr(poster.distance(lat, long), unit)
+			if distance <= radius:
+				poster.distance = distance
+				yield poster
 	
 	def edit(self, **kwargs):
 		id = kwargs['id']

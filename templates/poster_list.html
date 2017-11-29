@@ -1,16 +1,28 @@
+{% set ns = namespace(distance=false) %}
 <table>
 	<tr>
 		<th>Name</th>
-		<th>Latitude</th>
-		<th>Longitude</th>
+		{% if ns.distance %}
+			<th>Distance to you</th>
+		{% else %}
+			<th>Latitude</th>
+			<th>Longitude</th>
+		{% endif %}
 		<th>Author</th>
 		<th>Date published</th>
 	</tr>
 	{% for item in items %}
+		{% if item.distance %}
+			{% set ns.distance = true %}
+		{% endif %}
 		<tr>
 			<td><a href="/poster/{{item.id}}">{{item.title}}</a></td>
-			<td>{{item.lat}}</td>
-			<td>{{item.long}}</td>
+			{% if ns.distance %}
+				<td>{{item.distance}}</td>
+			{% else %}
+				<td>{{item.lat}}</td>
+				<td>{{item.long}}</td>
+			{% endif %}
 			<td>{{item.author}}</td>
 			<td>{{item.date}}</td>
 		</tr>
