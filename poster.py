@@ -6,6 +6,7 @@ from datetime import datetime as _datetime
 import json as _json
 
 from geopy.distance import distance as _distance
+from geopy.format import format_degrees as _format_degrees
 from geopy.geocoders import GoogleV3 as _GoogleV3
 
 import util as _util
@@ -46,20 +47,18 @@ class Poster:
 		self.lat, self.long = lat, long
 		self.text = text
 		self.author = author
-		
+
 		self.id = len(db)
 		self.token = _util.token_urlsafe()
 		self.date = self.time_here()
 		self.last_modified = None
-		
-		# db.append(self)
-	
+
 	def distance(self, lat, long):
 		return _distance((self.lat, self.long), (lat, long))
-	
+
 	def time_here(self):
 		return time_at(self.lat, self.long)
-	
+
 	def validate(self, id, token=None):
 		id_valid = id == self.id
 		if token is not None:
@@ -74,7 +73,7 @@ class Poster:
 			if new_val is not None:
 				setattr(self, field, new_val)
 		self.last_modified = self.time_here()
-	
+
 	def as_dict(self):
 		d = {}
 		for field, value in zip(self.fields, iter(self)):
@@ -84,7 +83,7 @@ class Poster:
 			'id': self.id,
 		})
 		return d
-	
+
 	@classmethod
 	def from_dict(cls, d):
 		p = Poster(
@@ -94,16 +93,16 @@ class Poster:
 		p.token = d['token']
 		p.date = d['date']
 		p.last_modified = d['last_modified']
-		
+
 		return p
-	
+
 	def __iter__(self):
 		yield from map(self.__getattribute__, self.fields)
 
 class Database(list):
 	def __init__(self, filename='db.json'):
 		self.filename = filename
-		
+
 		self._initialize_db_if_nonexistent()
 		with open(filename) as db_file:
 			self.extend(_json.load(db_file))
@@ -114,7 +113,7 @@ class Database(list):
 			if _get_filesize(file) == 0:
 				_json.dump([], file)
 				#pass
-	
+
 	def get_poster(self, id, token=None):
 		"""return a Poster object corresponding to the id.
 		If token is passed, validate that token against the database.
@@ -128,14 +127,14 @@ class Database(list):
 				return poster
 			else:
 				raise InvalidTokenError
-	
+
 	def search(self, lat, long, radius, unit):
 		for poster in map(Poster.from_dict, self):
 			distance = getattr(poster.distance(lat, long), unit)
 			if distance <= radius:
 				poster.distance = distance
 				yield poster
-	
+
 	def edit(self, **kwargs):
 		id = kwargs['id']
 		token = kwargs['token']
@@ -147,11 +146,11 @@ class Database(list):
 				poster.edit(**kwargs)
 				self[id] = poster.as_dict()
 		self.save()
-	
+
 	def save(self):
 		with open(self.filename, 'w') as f:
 			_json.dump(self[:], f)
-	
+
 	def append(self, poster):
 		super().append(poster.as_dict())
 		self.save()
