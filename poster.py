@@ -5,14 +5,14 @@ from collections import namedtuple as _namedtuple
 from datetime import datetime as _datetime
 import json as _json
 
-import geopy as _geopy
-_distance = _geopy.distance.distance
+from geopy.distance import distance as _distance
+from geopy.geocoders import GoogleV3 as _GoogleV3
 
 import util as _util
 
 """defines poster classes and utilities for interacting with the poster db"""
 
-_G = _geopy.geocoders.GoogleV3()
+_G = _GoogleV3()
 
 
 def _get_filesize(file):

@@ -46,7 +46,9 @@ def newpost():
 	p = poster.create_poster(**form)
 	session['tokens'].append(p.token)
 	session.modified = True
-	return redirect('/poster/{}'.format(p.id))
+	# XXX don't hardcode the hostname
+	# sorry I had to but this presentation is due tomorrow
+	return redirect('https://posters.win/view_poster/{}'.format(p.id))
 
 
 @app.route('/edit/<id>', methods=('POST', 'GET'))
