@@ -19,7 +19,7 @@ import util
 import poster
 
 app = Flask('digdug', static_url_path='/static')
-app.debug = True
+app.debug = False
 app.secret_key = 'Zf4je8VNbpfGHUHovvv6xWO2MOKQxhR7QSGi9eBcqSs'
 
 
@@ -27,7 +27,7 @@ app.secret_key = 'Zf4je8VNbpfGHUHovvv6xWO2MOKQxhR7QSGi9eBcqSs'
 def index():
 	return render_template('index.html', items=poster.db)
 
-@app.route('/poster/<id>') 
+@app.route('/poster/<id>')
 def view_poster(id):
 	return render_template(
 		'poster.html',
@@ -39,7 +39,7 @@ def newpost():
 	if request.method == 'GET':
 		return render_template('create.html')
 	session['tokens'] = session.get('tokens', [])
-	
+
 	# by default each value in request.form is a list
 	# this gets only the first item from each
 	form = request.form.to_dict(flat=True)
@@ -86,7 +86,7 @@ def forbidden(e):
 def main():
 	app.run(
 		host=os.getenv('IP', '0.0.0.0'),
-		port=int(os.getenv('PORT', 8080))
+		port=int(os.getenv('PORT', 5000))
 	)
 
 
