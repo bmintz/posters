@@ -1,2 +1,4 @@
 bleach
 flask
+Flask-HTMLmin
+
