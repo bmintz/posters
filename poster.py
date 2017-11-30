@@ -121,7 +121,9 @@ class Database(dict):
 		except KeyError:
 			raise InvalidPosterError
 		else:
-			if poster.validate(token):
+			if poster is None:
+				raise PosterDeletedError
+			elif poster.validate(token):
 				return poster
 			else:
 				raise InvalidTokenError
@@ -153,6 +155,10 @@ class Database(dict):
 			# not sure why i have to do this
 			_pickle.dump(_copy.deepcopy(self), f)
 
+	def __delitem__(self, id):
+		self[id] = None
+		self.save()
+
 	def add(self, poster):
 		if poster.id in self:
 			raise PosterExistsError
@@ -174,4 +180,7 @@ class InvalidPosterError(Exception):
 	pass
 
 class PosterExistsError(Exception):
+	pass
+
+class PosterDeletedError(Exception):
 	pass

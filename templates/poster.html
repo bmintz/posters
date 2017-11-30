@@ -15,7 +15,7 @@
 	<p id="user-text">{{poster.text}}</p>
 	{% set ns = namespace(owns_poster = false) %}
 	{% for token in session['tokens'] %}
-		{% if poster.validate(poster.id, token) %}
+		{% if poster.validate(token) %}
 			{% set ns.owns_poster = True %}
 		{% endif %}
 	{% endfor %}
