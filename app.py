@@ -15,7 +15,6 @@ from flask import (
 	request,
 	session,
 )
-from flask_htmlmin import HTMLMIN
 
 import poster
 from poster import InvalidPosterError, InvalidTokenError, PosterDeletedError
@@ -24,12 +23,6 @@ app = Flask('digdug', static_url_path='/static')
 app.debug = False
 app.secret_key = 'Zf4je8VNbpfGHUHovvv6xWO2MOKQxhR7QSGi9eBcqSs'
 
-# http://jinja.pocoo.org/docs/2.10/templates/#whitespace-control
-app.jinja_env.trim_blocks = True
-app.jinja_env.lstrip_blocks = True
-
-app.config['MINIFY_PAGE'] = True
-HTMLMIN(app, remove_comments=False)
 
 @app.route('/index')
 def index():
