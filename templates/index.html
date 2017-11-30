@@ -5,38 +5,40 @@
 	<link rel="stylesheet" href="/css/styles.css" type="text/css" />
 </head>
 <body>
+<div id="container">
 	<header>
 		<h1>Posters!</h1>
 		<p>A Posterboard Website</p>
+		{% if 
+			request.headers.get('X-URI') == 'https://posters.win'
+			or request.headers.get('X-URI') == 'https://www.posters.win'
+		%}
+			<p><a href="http://postersmg57v6cmq.onion/">Now available as a Tor .onion service!</a></p>
+		{% endif %}
 	</header>
 	<a href="/create">Create a new poster</a>
 	<form action="/search">
-		<label>
-			Latitude
-			<input type="number" name="lat">
-		</label>
-		<label>
-			Longitude
-			<input type="number" name="long"/>
-		</label>
-		<!-- no line break after this one, so use -->
-		<label class="no-label-br">
-			Search radius
-			<input type="number" name="radius"/>
-		</label>
-		<label>
-			<select name="unit">
-				<option value="km">Kilometers</option>
-				<option value="mi">Miles</option>
-				<option value="m">Meters</option>
-				<option value="feet">Feet</option>
-				<!-- we respect sailors around here too -->
-				<option value="nm">Nautical Miles</option>
-			</select>
-		</label>
+		<table>
+			{% include 'latlong_inputs.html' %}
+			<tr>
+				<td><label for="radius" class="no-label-br">Search radius</label></td>
+				<td>
+					<input type="number" step="0.0001" name="radius">
+					<select name="unit">
+						<option value="km">Kilometers</option>
+						<option value="mi">Miles</option>
+						<option value="m">Meters</option>
+						<option value="feet">Feet</option>
+						<!-- we respect sailors around here too -->
+						<option value="nm">Nautical Miles</option>
+					</select>
+				</td>
+			</tr>
+		</table>
 		<input type="submit" value="Search"/>
 	</form>
-	<h2>Nearby Posters</h2>
+	<h2>All Posters</h2>
 	{% include 'poster_list.html' %}
+</div>
 </body>
 </html>

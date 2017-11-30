@@ -3,6 +3,7 @@
 
 import os
 import json
+import urllib.parse
 
 from geopy.distance import distance
 from flask import (
@@ -43,12 +44,11 @@ def newpost():
 	# by default each value in request.form is a list
 	# this gets only the first item from each
 	form = request.form.to_dict(flat=True)
+	cast_form(form)
 	p = poster.create_poster(**form)
 	session['tokens'].append(p.token)
 	session.modified = True
-	# XXX don't hardcode the hostname
-	# sorry I had to but this presentation is due tomorrow
-	return redirect('https://posters.win/view_poster/{}'.format(p.id))
+	return redirect(get_host_url() + '/poster/{}'.format(p.id))
 
 
 @app.route('/edit/<id>', methods=('POST', 'GET'))
@@ -65,8 +65,10 @@ def edit(id):
 			abort(403)
 	elif request.method == 'POST':
 		token = request.args.get('token')
-		poster.db.edit(id=id, token=token, **request.form.to_dict(flat=True))
-		return render_template('poster.html', poster=poster.db.get_poster(id, token))
+		form = request.form.to_dict(flat=True)
+		cast_form(form)
+		poster.db.edit(id=id, token=token, **form)
+		return redirect(get_host_url() + '/poster/%s' % id)
 	else: # method == 'GET' but no token
 		abort(403)
 
@@ -75,15 +77,27 @@ def search():
 	lat = float(request.args.get('lat'))
 	long = float(request.args.get('long'))
 	radius = float(request.args.get('radius'))
+	unit = request.args.get('unit')
 	return render_template(
 		'search_results.html',
-		items=poster.db.search(lat, long, radius, request.args.get('unit'))
+		items=poster.db.search(lat, long, radius, unit),
+		unit=unit,
 	)
+
+
+def get_host_url():
+	# shame that I have to do this
+	return request.headers.get('X-URI')
 
 
 @app.errorhandler(403)
 def forbidden(e):
 	return render_template('403.html'), 403
+
+
+def cast_form(d):
+	d['lat'], d['long'] = map(float, (d['lat'], d['long']))
+
 
 def main():
 	app.run(

@@ -48,7 +48,7 @@ class Poster:
 		self.text = text
 		self.author = author
 
-		self.id = len(db)
+		self.id = db[-1]['id']+1 if len(db) > 1 else 0
 		self.token = _util.token_urlsafe()
 		self.date = self.time_here()
 		self.last_modified = None
@@ -132,7 +132,8 @@ class Database(list):
 		for poster in map(Poster.from_dict, self):
 			distance = getattr(poster.distance(lat, long), unit)
 			if distance <= radius:
-				poster.distance = distance
+				poster.distance = round(distance, 2)
+				poster.unit = unit
 				yield poster
 
 	def edit(self, **kwargs):

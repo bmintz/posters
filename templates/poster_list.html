@@ -1,30 +1,31 @@
-{% set ns = namespace(distance=false) %}
-<table>
+{% import 'google_maps_link.html' as maps %}
+<table class="list">
 	<tr>
-		<th>Name</th>
-		{% if ns.distance %}
+		<th>Title</th>
+		<th>Location</th>
+		{% if unit %}{# then we're displaying distances #}
 			<th>Distance to you</th>
-		{% else %}
-			<th>Latitude</th>
-			<th>Longitude</th>
 		{% endif %}
 		<th>Author</th>
 		<th>Date published</th>
 	</tr>
 	{% for item in items %}
-		{% if item.distance %}
-			{% set ns.distance = true %}
-		{% endif %}
 		<tr>
 			<td><a href="/poster/{{item.id}}">{{item.title}}</a></td>
-			{% if ns.distance %}
-				<td>{{item.distance}}</td>
-			{% else %}
-				<td>{{item.lat}}</td>
-				<td>{{item.long}}</td>
+			<td>{{ maps.location_link(item.lat, item.long) }}</td>
+			{% if unit %}
+				<td>{{item.distance}} {{unit}}</td>
 			{% endif %}
 			<td>{{item.author}}</td>
 			<td>{{item.date}}</td>
+		</tr>
+	{% else %}
+		<tr>
+			{% set colspan = 4 %}
+			{% if unit %}
+				{% set colspan = colspan + 1%}
+			{% endif %}
+			<td colspan="{{colspan}}">No posters found.</td>
 		</tr>
 	{% endfor %}
 </table>

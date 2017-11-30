@@ -1,41 +1,36 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<title>
-		Edit!
-	</title>
+	<title>Edit!</title>
 	<link rel="stylesheet" href="/css/styles.css" type="text/css" />
 </head>
 <body>
-		<header>
-			<h1>Edit!</h1>
-		</header>
-		
-		<form method="POST">
-			<label>
-				Name
-				<input type="text" name="title" value="{{poster.title}}">
-			</label>
-			<label>
-				Latitude
-				<input type="number" step="0.00000001" name="lat" value="{{poster.lat}}">
-			</label>
-			<label>
-				Longitude
-				<input type="number" step="0.00000001" name="long" value="{{poster.long}}">
-			</label>
-			<lable>
-				Author
-				<input type="text" name="author" value="{{poster.author}}">
-			</label>
-			<label>
-				Text
-				<textarea name="text">{{poster.text}}</textarea>
-			</label>
-			<input type="submit" value="Save edits">
-		</form>
-		<form action="/">
-			<input type="submit" value="Cancel and go back" />
-		</form>		
+<div id="container">
+	<header>
+		<h1>Edit!</h1>
+	</header>
+	
+	<form method="POST">
+		<table>
+			<tr>
+				<td><label for="title">Title</label></td>
+				<td><input type="text" name="title" value="{{poster.title}}"></td>
+			</tr>
+			{% include 'latlong_inputs.html' %}
+			<tr>
+				<td><label for="author">Author</label></td>
+				<td><input type="text" name="author" value="{{poster.author}}"></td>
+			</tr>
+			<tr>
+				<td><label for="text">Text</label></td>
+				<td><textarea name="text">{{poster.text}}</textarea></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" value="Save edits"></td>
+			</tr>
+		</table>
+	</form>
+	<a href="/"><button>Cancel and go back</button></a>
+</div>
 </body>
 </html>
