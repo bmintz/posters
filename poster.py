@@ -100,7 +100,7 @@ class Poster:
 		yield from map(self.__getattribute__, self.fields)
 
 class Database(list):
-	def __init__(self, filename='db.json'):
+	def __init__(self, filename='../db.json'):
 		self.filename = filename
 
 		self._initialize_db_if_nonexistent()
@@ -147,6 +147,11 @@ class Database(list):
 				poster.edit(**kwargs)
 				self[id] = poster.as_dict()
 		self.save()
+
+	def __delitem__(self, id):
+		super().__delitem__(id)
+		for id, p in enumerate(self):
+			p['id'] = id
 
 	def save(self):
 		with open(self.filename, 'w') as f:
