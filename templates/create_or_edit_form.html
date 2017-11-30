@@ -1,0 +1,28 @@
+{% macro create_edit_form(poster=None) %}
+	{% if poster is not sameas None %}
+		{% set title = poster.title %}
+		{% set lat = poster.lat %}
+		{% set long = poster.long %}
+		{% set author = poster.author %}
+		{% set text = poster.text %}
+	{% endfor %}
+<form method="POST">
+	<table>
+		<tr>
+			<td><label for="title">Title</label></td>
+			<td><input type="text" name="title" value="{{title}}"></td>
+		</tr>
+		{% include 'latlong_inputs.html' %}
+		<tr>
+			<td><label for="author">Author</label></td>
+			<td><input type="text" name="author" value="{{author}}"></td>
+		</tr>
+		<tr>
+			<td><label for="text">Text</label></td>
+			<td><textarea name="text" value="{{text}}"></textarea></td>
+		<tr>
+			<td colspan="2"><input type="submit" value="Save poster"></td>
+		</tr>
+	</table>
+</form>
+{% endmacro %}

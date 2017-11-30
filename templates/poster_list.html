@@ -1,4 +1,4 @@
-{% import 'google_maps_link.html' as maps %}
+{% from 'google_maps_link.html' import location_link %}
 <table class="list">
 	<tr>
 		<th>Title</th>
@@ -12,7 +12,7 @@
 	{% for item in items %}
 		<tr>
 			<td><a href="/poster/{{item.id}}">{{item.title}}</a></td>
-			<td>{{ maps.location_link(item.lat, item.long) }}</td>
+			<td>{{ location_link(item.lat, item.long) }}</td>
 			{% if unit %}
 				<td>{{item.distance}} {{unit}}</td>
 			{% endif %}
