@@ -2,8 +2,9 @@
 # encoding: utf-8
 
 from collections import namedtuple as _namedtuple
+import copy as _copy
 from datetime import datetime as _datetime
-import json as _json
+import pickle as _pickle
 
 from geopy.distance import distance as _distance
 from geopy.format import format_degrees as _format_degrees
@@ -26,9 +27,9 @@ def _get_filesize(file):
 
 def _create_file_if_non_existent(filename):
 	try:
-		return open(filename, 'a')
+		return open(filename, 'ab')
 	except FileNotFoundError:
-		return open(filename, 'x')
+		return open(filename, 'xb')
 
 
 def time_at(*location):
@@ -48,7 +49,7 @@ class Poster:
 		self.text = text
 		self.author = author
 
-		self.id = db[-1]['id']+1 if len(db) > 1 else 0
+		self.id = len(db)
 		self.token = _util.token_urlsafe()
 		self.date = self.time_here()
 		self.last_modified = None
@@ -59,12 +60,10 @@ class Poster:
 	def time_here(self):
 		return time_at(self.lat, self.long)
 
-	def validate(self, id, token=None):
-		id_valid = id == self.id
+	def validate(self, token=None):
 		if token is not None:
-			return token == self.token and id_valid
-		else:
-			return id_valid
+			return token == self.token
+		return True
 
 	def edit(self, **kwargs):
 		self.validate(kwargs['id'], kwargs['token'])
@@ -99,39 +98,40 @@ class Poster:
 	def __iter__(self):
 		yield from map(self.__getattribute__, self.fields)
 
-class Database(list):
-	def __init__(self, filename='../db.json'):
+class Database(dict):
+	def __init__(self, filename='../db.pickle'):
 		self.filename = filename
 
 		self._initialize_db_if_nonexistent()
-		with open(filename) as db_file:
-			self.extend(_json.load(db_file))
+		with open(filename, 'rb') as db_file:
+			self.update(_pickle.load(db_file))
 
 	def _initialize_db_if_nonexistent(self):
 		file = _create_file_if_non_existent(self.filename)
 		with file:
 			if _get_filesize(file) == 0:
-				_json.dump([], file)
-				#pass
+				_pickle.dump({}, file)
 
 	def get_poster(self, id, token=None):
 		"""return a Poster object corresponding to the id.
 		If token is passed, validate that token against the database.
 		If the token is invalid, raise InvalidTokenError"""
 		try:
-			poster = Poster.from_dict(self[id])
-		except IndexError:
+			poster = self[id]
+		except KeyError:
 			raise InvalidPosterError
 		else:
-			if poster.validate(id, token):
+			if poster.validate(token):
 				return poster
 			else:
 				raise InvalidTokenError
 
 	def search(self, lat, long, radius, unit):
-		for poster in map(Poster.from_dict, self):
+		for poster in self.values():
 			distance = getattr(poster.distance(lat, long), unit)
 			if distance <= radius:
+				# don't overwrite the .distance method in place
+				poster = _copy.deepcopy(poster)
 				poster.distance = round(distance, 2)
 				poster.unit = unit
 				yield poster
@@ -139,26 +139,24 @@ class Database(list):
 	def edit(self, **kwargs):
 		id = kwargs['id']
 		token = kwargs['token']
-		if id in range(len(self)):
+		if id in self:
 			poster = self.get_poster(id)
-			if not poster.validate(id, token):
+			if not poster.validate(token):
 				raise InvalidTokenError
 			else:
 				poster.edit(**kwargs)
-				self[id] = poster.as_dict()
+				self[id] = poster
 		self.save()
 
-	def __delitem__(self, id):
-		super().__delitem__(id)
-		for id, p in enumerate(self):
-			p['id'] = id
-
 	def save(self):
-		with open(self.filename, 'w') as f:
-			_json.dump(self[:], f)
+		with open(self.filename, 'wb') as f:
+			# not sure why i have to do this
+			_pickle.dump(_copy.deepcopy(self), f)
 
-	def append(self, poster):
-		super().append(poster.as_dict())
+	def add(self, poster):
+		if poster.id in self:
+			raise PosterExistsError
+		self[poster.id] = poster
 		self.save()
 
 db = Database()
@@ -166,11 +164,14 @@ db = Database()
 def create_poster(**kwargs):
 	lat, long = float(kwargs['lat']), float(kwargs['long'])
 	p = Poster(**kwargs)
-	db.append(p)
+	db.add(p)
 	return p
 
 class InvalidTokenError(Exception):
 	pass
 
 class InvalidPosterError(Exception):
+	pass
+
+class PosterExistsError(Exception):
 	pass

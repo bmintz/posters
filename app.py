@@ -26,7 +26,7 @@ app.secret_key = 'Zf4je8VNbpfGHUHovvv6xWO2MOKQxhR7QSGi9eBcqSs'
 
 @app.route('/index')
 def index():
-	return render_template('index.html', items=poster.db)
+	return render_template('index.html', items=poster.db.values())
 
 @app.route('/poster/<id>')
 def view_poster(id):
