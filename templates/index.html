@@ -9,10 +9,7 @@
 	<header>
 		<h1>Posters!</h1>
 		<p>A Posterboard Website</p>
-		{% if 
-			request.headers.get('X-URI') == 'https://posters.win'
-			or request.headers.get('X-URI') == 'https://www.posters.win'
-		%}
+		{% if request.headers.get('X-URI') in ['https://posters.win', 'https://www.posters.win'] %}
 			<p><a href="http://postersmg57v6cmq.onion/">Now available as a Tor .onion service!</a></p>
 		{% endif %}
 	</header>
