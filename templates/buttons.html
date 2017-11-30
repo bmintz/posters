@@ -1,0 +1,6 @@
+{% macro cancel(title='Cancel and go back') %}
+<a href="/"><button>{{title}}</button></a>
+{% endmacro %}
+{% macro back() %}
+{{cancel('Return to the main page')}}
+{% endmacro %}

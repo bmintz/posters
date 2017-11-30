@@ -6,6 +6,8 @@
 </head>
 <body>
 <div id="container">
+	{% import 'buttons.html' as buttons %}
+	{{buttons.back()}}
 	<h1>Results</h1>
 	{% include 'poster_list.html' %}
 </div>

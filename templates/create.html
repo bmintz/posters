@@ -28,7 +28,8 @@
 			</tr>
 		</table>
 	</form>
-	<a href="/"><button>Cancel and go back</button></a>
+	{% import 'buttons.html' as buttons %}
+	{{ buttons.cancel() }}
 </div>
 </body>
 </html>

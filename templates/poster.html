@@ -22,7 +22,8 @@
 	{% if ns.owns_poster %}
 		<a href="/edit/{{poster.id}}?token={{poster.token}}">Edit this poster</a>
 	{% endif %}
-	<a href="/"><button>Return to Main Page</button></a>
+	{% import 'buttons.html' as buttons %}
+	{{ buttons.back() }}
 </div>
 </body>
 </html>
