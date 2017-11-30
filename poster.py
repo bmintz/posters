@@ -162,6 +162,7 @@ class Database(dict):
 
 	def __delitem__(self, id):
 		self[id] = None
+		self.save()
 
 	def add(self, poster):
 		if poster.id in self:

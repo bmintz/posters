@@ -16,13 +16,13 @@ from flask import (
 	session,
 )
 
-import util
 import poster
 
 app = Flask('digdug', static_url_path='/static')
 app.debug = False
 app.secret_key = 'Zf4je8VNbpfGHUHovvv6xWO2MOKQxhR7QSGi9eBcqSs'
-
+# needed for {% continue %}
+app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
 @app.route('/index')
 def index():
@@ -30,10 +30,16 @@ def index():
 
 @app.route('/poster/<id>')
 def view_poster(id):
-	return render_template(
-		'poster.html',
-		poster=poster.db.get_poster(int(id)),
-	)
+	id = int(id)
+	try:
+		return render_template(
+			'poster.html',
+			poster=poster.db.get_poster(id),
+		)
+	except poster.InvalidPosterError:
+		abort(404)
+	except poster.PosterDeletedError:
+		abort(410)
 
 @app.route('/create', methods=('POST', 'GET'))
 def newpost():
