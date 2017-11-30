@@ -66,7 +66,8 @@ class Poster:
 		return True
 
 	def edit(self, **kwargs):
-		self.validate(kwargs['id'], kwargs['token'])
+		if not self.validate(kwargs['token']):
+			raise InvalidTokenError
 		for field in self.fields:
 			new_val = kwargs.get(field)
 			if new_val is not None:
@@ -121,7 +122,9 @@ class Database(dict):
 		except KeyError:
 			raise InvalidPosterError
 		else:
-			if poster.validate(token):
+			if poster is None:
+				raise PosterDeletedError
+			elif poster.validate(token):
 				return poster
 			else:
 				raise InvalidTokenError
@@ -141,17 +144,24 @@ class Database(dict):
 		token = kwargs['token']
 		if id in self:
 			poster = self.get_poster(id)
-			if not poster.validate(token):
-				raise InvalidTokenError
-			else:
-				poster.edit(**kwargs)
-				self[id] = poster
+		else:
+			raise InvalidPosterError
+
+		if poster.validate(token):
+			poster.edit(**kwargs)
+			self[id] = poster
+		else:
+			raise InvalidTokenError
+
 		self.save()
 
 	def save(self):
 		with open(self.filename, 'wb') as f:
 			# not sure why i have to do this
 			_pickle.dump(_copy.deepcopy(self), f)
+
+	def __delitem__(self, id):
+		self[id] = None
 
 	def add(self, poster):
 		if poster.id in self:
@@ -174,4 +184,7 @@ class InvalidPosterError(Exception):
 	pass
 
 class PosterExistsError(Exception):
+	pass
+
+class PosterDeletedError(Exception):
 	pass
