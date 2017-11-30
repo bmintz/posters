@@ -15,7 +15,7 @@ header p {
 	font-style: italic;
 }
 
-#user-text {
+#user-text, p.license {
 	/* preserve user-entered newlines */
 	white-space: pre-wrap;
 }
