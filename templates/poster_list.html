@@ -10,9 +10,6 @@
 		<th>Date published</th>
 	</tr>
 	{% for item in items %}
-		{% if item is sameas None %}
-			{% continue %}
-		{% endif %}
 		<tr>
 			<td><a href="/poster/{{item.id}}">{{item.title}}</a></td>
 			<td>{{ maps.location_link(item.lat, item.long) }}</td>

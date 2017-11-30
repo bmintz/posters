@@ -129,6 +129,11 @@ class Database(dict):
 			else:
 				raise InvalidTokenError
 
+	def values(self):
+		for poster in super().values():
+			if poster is not None:
+				yield poster
+
 	def search(self, lat, long, radius, unit):
 		for poster in self.values():
 			distance = getattr(poster.distance(lat, long), unit)

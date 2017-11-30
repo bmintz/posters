@@ -22,8 +22,7 @@ from poster import InvalidPosterError, InvalidTokenError, PosterDeletedError
 app = Flask('digdug', static_url_path='/static')
 app.debug = False
 app.secret_key = 'Zf4je8VNbpfGHUHovvv6xWO2MOKQxhR7QSGi9eBcqSs'
-# needed for {% continue %}
-app.jinja_env.add_extension('jinja2.ext.loopcontrols')
+
 
 @app.route('/index')
 def index():
