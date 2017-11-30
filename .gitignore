@@ -4,3 +4,5 @@ __pycache__/
 .py[cod]
 *~
 .c9/
+db.json
+
