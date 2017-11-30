@@ -20,7 +20,7 @@ header p {
 	white-space: pre-wrap;
 }
 
-table {
+table, table input, table textarea {
 	width: 100%;
 }
 
@@ -34,11 +34,6 @@ table.list {
 table.list td {
 	width: 25%;
 	word-wrap: break-word;
-}
-
-
-textarea {
-	width: 100%;
 }
 
 label {
