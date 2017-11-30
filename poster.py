@@ -4,6 +4,7 @@
 from collections import namedtuple as _namedtuple
 import copy as _copy
 from datetime import datetime as _datetime
+import json as _json
 import pickle as _pickle
 
 from geopy.distance import distance as _distance
@@ -14,7 +15,9 @@ import util as _util
 
 """defines poster classes and utilities for interacting with the poster db"""
 
-_G = _GoogleV3()
+with open('config.json') as _conf:
+	_CONFIG = _json.load(_conf)
+_G = _GoogleV3(_CONFIG['api_keys']['google_maps_geocoding'])
 
 
 def _get_filesize(file):
@@ -41,11 +44,12 @@ def time_at(*location):
 
 
 class Poster:
-	fields = ['title', 'text', 'lat', 'long', 'author', 'date', 'last_modified']
+	fields = ['title', 'text', 'lat', 'long', 'location', 'author', 'date', 'last_modified']
 
-	def __init__(self, title, lat, long, text, author):
+	def __init__(self, title, location: str, text, author):
 		self.title = title
-		self.lat, self.long = lat, long
+		self.location = location
+		self.get_latlong()
 		self.text = text
 		self.author = author
 
@@ -53,6 +57,13 @@ class Poster:
 		self.token = _util.token_urlsafe()
 		self.date = self.time_here()
 		self.last_modified = None
+
+	def get_latlong(self):
+		result = _G.geocode((self.lat, self.long))
+		if result is None:
+			raise InvalidLocationError
+		else:
+			self.lat, self.long = result.point[:2]
 
 	def distance(self, lat, long):
 		return _distance((self.lat, self.long), (lat, long))
@@ -89,6 +100,8 @@ class Poster:
 		p = Poster(
 			**{k: d[k] for k in set(cls.fields) - {'date', 'last_modified'}}
 		)
+		# since these fields are generated automatically by __init__,
+		# we have to set them ourselves
 		p.id = d['id']
 		p.token = d['token']
 		p.date = d['date']
@@ -178,7 +191,6 @@ class Database(dict):
 db = Database()
 
 def create_poster(**kwargs):
-	lat, long = float(kwargs['lat']), float(kwargs['long'])
 	p = Poster(**kwargs)
 	db.add(p)
 	return p
