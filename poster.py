@@ -7,8 +7,8 @@ from datetime import datetime as _datetime
 import json as _json
 import pickle as _pickle
 
+from geopy.exc import GeopyError as _GeopyError
 from geopy.distance import distance as _distance
-from geopy.format import format_degrees as _format_degrees
 from geopy.geocoders import GoogleV3 as _GoogleV3
 
 from util import config
@@ -38,7 +38,7 @@ def _create_file_if_non_existent(filename):
 def time_at(*location):
 	try:
 		now = _datetime.now(tz=_timezone_encoder.timezone(location))
-	except ValueError:
+	except _GeopyError:
 		now = _datetime.utcnow()
 	return _datetime.strftime(now, '%Y-%m-%d %H:%M:%S UTC%z')
 
