@@ -33,7 +33,7 @@ app.secret_key = config['secret_key']
 
 @app.route('/index')
 def index():
-	return render_template('index.html', items=poster.db.values())
+	return render_template('index.html', posters=poster.db.values())
 
 @app.route('/poster/<id>')
 def view_poster(id):
@@ -115,7 +115,7 @@ def search():
 	try:
 		return render_template(
 			'search_results.html',
-			items=poster.db.search(location, radius, unit),
+			posters=poster.db.search(location, radius, unit),
 			unit=unit,
 		)
 	except InvalidLocationError:

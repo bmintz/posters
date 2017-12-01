@@ -11,7 +11,7 @@
 	<h3>{{poster.title}}</h3>
 	{% from 'google_maps_link.html' import location_link %}
 	Location: {{location_link(poster)}}<br>
-	Posted by {{poster.author}} on {{poster.date}}<br>
+	Posted by {{poster.author}} on {% include 'poster_date.html' %}<br>
 	<!-- since this el has white-space: pre on it, don't indent -->
 	<p id="user-text">{{poster.text}}</p>
 	{% set ns = namespace(owns_poster = false) %}

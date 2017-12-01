@@ -9,15 +9,15 @@
 		<th>Author</th>
 		<th>Date published</th>
 	</tr>
-	{% for item in items %}
+	{% for poster in posters %}
 		<tr>
-			<td><a href="/poster/{{item.id}}">{{item.title}}</a></td>
-			<td>{{ location_link(item) }}</td>
+			<td><a href="/poster/{{poster.id}}">{{poster.title}}</a></td>
+			<td>{{ location_link(poster) }}</td>
 			{% if unit %}
-				<td>{{item.distance}} {{unit}}</td>
+				<td>{{poster.distance}} {{unit}}</td>
 			{% endif %}
-			<td>{{item.author}}</td>
-			<td>{{item.date}}</td>
+			<td>{{poster.author}}</td>
+			<td>{% include 'poster_date.html' %}</td>
 		</tr>
 	{% else %}
 		<tr>

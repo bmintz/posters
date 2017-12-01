@@ -1,0 +1,7 @@
+{% set last_modified = '' %}
+{% set date = poster.date %}
+{% if poster.last_modified is not sameas None %}
+	{% set last_modified = 'Last modified on ' + poster.last_modified %}
+	{% set date = date + '*' %}
+{% endif %}
+<span title="{{last_modified}}">{{date}}</span>
