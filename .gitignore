@@ -5,4 +5,4 @@ __pycache__/
 *~
 .c9/
 *.json
-!*default.json
+!*example.json

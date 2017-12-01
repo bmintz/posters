@@ -23,10 +23,12 @@ from poster import (
 	PosterDeletedError,
 	InvalidLocationError,
 )
+from util import config
 
 app = Flask('digdug', static_url_path='/static')
-app.debug = False
-app.secret_key = 'Zf4je8VNbpfGHUHovvv6xWO2MOKQxhR7QSGi9eBcqSs'
+
+app.debug = config['debug']
+app.secret_key = config['secret_key']
 
 
 @app.route('/index')

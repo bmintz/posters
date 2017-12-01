@@ -1,4 +1,6 @@
 {
+	"debug": true,
+	"secret_key": "<use secrets.token_urlsafe() or util.token_urlsafe() to generate>",
 	"api_keys": {
 			"google_maps_geocoding": "<key here>"
 			"google_maps_timezone": "<key here>",

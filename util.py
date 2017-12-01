@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
 import base64
+import json
 import os
 
 DEFAULT_ENTROPY = 32  # number of bytes to return by default
+
+with open('config.json') as config_file:
+	config = json.load(config_file)
 
 def token_bytes(nbytes=None):
 	"""Return a random byte string containing *nbytes* bytes.

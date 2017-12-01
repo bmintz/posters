@@ -11,14 +11,13 @@ from geopy.distance import distance as _distance
 from geopy.format import format_degrees as _format_degrees
 from geopy.geocoders import GoogleV3 as _GoogleV3
 
+from util import config
 import util as _util
 
 """defines poster classes and utilities for interacting with the poster db"""
 
-with open('config.json') as _conf:
-	_CONFIG = _json.load(_conf)
-_geocoder = _GoogleV3(_CONFIG['api_keys']['google_maps_geocoding'])
-_timezone_encoder = _GoogleV3(_CONFIG['api_keys']['google_maps_timezone'])
+_geocoder = _GoogleV3(config['api_keys']['google_maps_geocoding'])
+_timezone_encoder = _GoogleV3(config['api_keys']['google_maps_timezone'])
 
 
 def _get_filesize(file):
@@ -196,12 +195,17 @@ def geocode(location: str):
 		raise InvalidLocationError
 	return result.point[:2]
 
-class InvalidTokenError(Exception): pass
+class InvalidTokenError(Exception):
+	pass
 
-class InvalidPosterError(Exception): pass
+class InvalidPosterError(Exception):
+	pass
 
-class PosterExistsError(Exception): pass
+class PosterExistsError(Exception):
+	pass
 
-class PosterDeletedError(Exception): pass
+class PosterDeletedError(Exception):
+	pass
 
-class InvalidLocationError(Exception): pass
+class InvalidLocationError(Exception):
+	pass
