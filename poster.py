@@ -51,7 +51,8 @@ class Poster:
 
 	def __init__(self, title, location: str, text, author):
 		self.title = title
-		self.update_location(location)
+		self.location = location
+		self.update_location()
 		self.text = text
 		self.author = author
 
@@ -71,9 +72,8 @@ class Poster:
 			return token == self.token
 		return True
 
-	def update_location(location: str):
-		self.location = location
-		self.lat, self.long = geocode(location)
+	def update_location(self):
+		self.lat, self.long = geocode(self.location)
 
 	def edit(self, **kwargs):
 		if not self.validate(kwargs['token']):
