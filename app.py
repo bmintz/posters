@@ -37,16 +37,10 @@ def index():
 
 @app.route('/poster/<id>')
 def view_poster(id):
-	id = int(id)
-	try:
-		return render_template(
-			'poster.html',
-			poster=poster.db.get_poster(id),
-		)
-	except poster.InvalidPosterError:
-		abort(404)
-	except poster.PosterDeletedError:
-		abort(410)
+	return render_template(
+		'poster.html',
+		poster=get_poster(int(id)),
+	)
 
 @app.route('/create', methods=('POST', 'GET'))
 def newpost():
