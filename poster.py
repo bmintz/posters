@@ -51,8 +51,7 @@ class Poster:
 
 	def __init__(self, title, location: str, text, author):
 		self.title = title
-		self.location = location
-		self.lat, self.long = geocode(location)
+		self.update_location(location)
 		self.text = text
 		self.author = author
 
@@ -72,6 +71,10 @@ class Poster:
 			return token == self.token
 		return True
 
+	def update_location(location: str):
+		self.location = location
+		self.lat, self.long = geocode(location)
+
 	def edit(self, **kwargs):
 		if not self.validate(kwargs['token']):
 			raise InvalidTokenError
@@ -79,6 +82,7 @@ class Poster:
 			new_val = kwargs.get(field)
 			if new_val is not None:
 				setattr(self, field, new_val)
+		self.update_location()
 		self.last_modified = self.time_here()
 
 	def as_dict(self):
