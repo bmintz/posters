@@ -48,3 +48,7 @@ label:not(.no-label-br):after {
 label #units:after {
 	content: "";
 }
+
+input[name="radius"] {
+	width: inherit;
+}
