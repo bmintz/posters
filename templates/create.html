@@ -10,36 +10,8 @@
 	<header>
 		<h1>New poster!</h1>
 	</header>	
-	<form method="POST">
-		<table>
-			<tr>
-				<td><label for="title">Title</label></td>
-				<td><input type="text" name="title"></td>
-			</tr>
-			{% include 'location_input.html' %}
-			<tr>
-				<td><label for="author">Author</label></td>
-				<td><input type="text" name="author"></td>
-			</tr>
-			<tr>
-				<td><label for="text">Text</label></td>
-				<td><textarea name="text"></textarea></td>
-			<tr>
-			</tr>
-			<tr>
-				<td colspan="2"><input type="submit" value="Save poster"></td>
-			</tr>
-		</table>
-		<p>
-			<!-- The Coding Den made me do it -->
-			By submitting this content, you confirm that you have the legal right to distribute it.
-			If you do not have ownership of the content, you agree that you have express authorization or a license to do so.
-			Content you submit must comply with all laws of the United States of America.
-			Posters.win will not be held responsible for user submitted content.
-			If you wish to remove a poster, please press the "Delete this poster" button after creating it,
-			or contact <a href="mailto:content@posters.win">content@posters.win</a>.
-		</p>
-	</form>
+	{% from 'create_or_edit_form.html' import create_edit_form %}
+	{{ create_edit_form() }}
 	{% import 'buttons.html' as buttons %}
 	{{ buttons.cancel() }}
 </div>

@@ -10,27 +10,8 @@
 	<header>
 		<h1>Edit!</h1>
 	</header>
-	
-	<form method="POST">
-		<table>
-			<tr>
-				<td><label for="title">Title</label></td>
-				<td><input type="text" name="title" value="{{poster.title}}"></td>
-			</tr>
-			{% include 'latlong_inputs.html' %}
-			<tr>
-				<td><label for="author">Author</label></td>
-				<td><input type="text" name="author" value="{{poster.author}}"></td>
-			</tr>
-			<tr>
-				<td><label for="text">Text</label></td>
-				<td><textarea name="text">{{poster.text}}</textarea></td>
-			</tr>
-			<tr>
-				<td colspan="2"><input type="submit" value="Save edits"></td>
-			</tr>
-		</table>
-	</form>
+	{% from 'create_or_edit_form.html' import create_edit_form %}
+	{{ create_edit_form(poster) }}
 	<form method="POST">
 		<input type="hidden" name="delete" value="true">
 		<input type="submit" value="Delete this poster (cannot be undone!)">
