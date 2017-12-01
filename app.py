@@ -101,6 +101,8 @@ def get_poster(id, token=None):
 		abort(403)
 	except PosterDeletedError:
 		abort(410)
+	except InvalidLocationError:
+		abort(400)
 
 @app.route('/search')
 def search():
