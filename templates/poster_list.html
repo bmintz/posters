@@ -12,7 +12,7 @@
 	{% for item in items %}
 		<tr>
 			<td><a href="/poster/{{item.id}}">{{item.title}}</a></td>
-			<td>{{ location_link(item.lat, item.long) }}</td>
+			<td>{{ location_link(item) }}</td>
 			{% if unit %}
 				<td>{{item.distance}} {{unit}}</td>
 			{% endif %}

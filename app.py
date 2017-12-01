@@ -50,7 +50,6 @@ def newpost():
 	# by default each value in request.form is a list
 	# this gets only the first item from each
 	form = request.form.to_dict(flat=True)
-	cast_form(form)
 	p = poster.create_poster(**form)
 	session['tokens'].append(p.token)
 	session.modified = True
@@ -80,7 +79,6 @@ def process_edit_request(id, token):
 		# go back home
 		return redirect(get_host_url())
 	form = request.form.to_dict(flat=True)
-	cast_form(form)
 	poster.db.edit(id=id, token=token, **form)
 	return redirect(get_host_url() + '/poster/%s' % id)
 
@@ -96,13 +94,15 @@ def get_poster(id, token=None):
 
 @app.route('/search')
 def search():
-	lat = float(request.args.get('lat'))
-	long = float(request.args.get('long'))
-	radius = float(request.args.get('radius'))
+	location, radius, unit = map(
+		request.args.get,
+		('location', 'radius', 'unit')
+	)
+	radius = float(radius)
 	unit = request.args.get('unit')
 	return render_template(
 		'search_results.html',
-		items=poster.db.search(lat, long, radius, unit),
+		items=poster.db.search(location, radius, unit),
 		unit=unit,
 	)
 

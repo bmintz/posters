@@ -9,7 +9,7 @@
 	<header><h2>Poster</h2></header>
 	<h3>{{poster.title}}</h3>
 	{% from 'google_maps_link.html' import location_link %}
-	Location: {{location_link(poster.lat, poster.long)}}<br>
+	Location: {{location_link(poster)}}<br>
 	Posted by {{poster.author}} on {{poster.date}}<br>
 	<!-- since this el has white-space: pre on it, don't indent -->
 	<p id="user-text">{{poster.text}}</p>

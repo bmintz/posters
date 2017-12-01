@@ -59,7 +59,7 @@ class Poster:
 		self.last_modified = None
 
 	def get_latlong(self):
-		result = _G.geocode((self.lat, self.long))
+		result = _G.geocode(self.location)
 		if result is None:
 			raise InvalidLocationError
 		else:
@@ -147,7 +147,8 @@ class Database(dict):
 			if poster is not None:
 				yield poster
 
-	def search(self, lat, long, radius, unit):
+	def search(self, location, radius, unit):
+		lat, long = geocode(location)
 		for poster in self.values():
 			distance = getattr(poster.distance(lat, long), unit)
 			if distance <= radius:
@@ -195,14 +196,18 @@ def create_poster(**kwargs):
 	db.add(p)
 	return p
 
-class InvalidTokenError(Exception):
-	pass
+def geocode(location: str):
+	result = _G.geocode(location)
+	if result is None:
+		raise InvalidLocationError
+	return result.point[:2]
 
-class InvalidPosterError(Exception):
-	pass
+class InvalidTokenError(Exception): pass
 
-class PosterExistsError(Exception):
-	pass
+class InvalidPosterError(Exception): pass
 
-class PosterDeletedError(Exception):
-	pass
+class PosterExistsError(Exception): pass
+
+class PosterDeletedError(Exception): pass
+
+class InvalidLocationError(Exception): pass
