@@ -1,3 +1,8 @@
 {% macro location_link(poster) %}
-	<a href="https://www.google.com/maps/place/{{poster.lat}},{{poster.long}}">{{poster.location}}</a>
+{% if poster.location is defined %}
+	{% set location = poster.location %}
+{% else %}
+	{% set location = 'View on the map' %}
+{% endif %}
+	<a href="https://www.google.com/maps/place/{{poster.lat}},{{poster.long}}">{{location}}</a>
 {% endmacro %}
