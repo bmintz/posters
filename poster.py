@@ -40,7 +40,10 @@ def time_at(*location):
 		now = _datetime.now(tz=_timezone_encoder.timezone(location))
 	except _GeopyError:
 		now = _datetime.utcnow()
-	return _datetime.strftime(now, '%Y-%m-%d %H:%M:%S UTC%z')
+	timezone = _datetime.strftime(now, '%Z')
+	if not timezone:
+		timezone = 'UTC'
+	return _datetime.strftime(now, '%Y-%m-%d %H:%M:%S ' + timezone)
 
 
 class Poster:
