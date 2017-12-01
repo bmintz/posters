@@ -1,5 +1,6 @@
 {
 	"api_keys": {
 			"google_maps_geocoding": "<key here>"
+			"google_maps_timezone": "<key here>",
 	}
 }

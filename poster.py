@@ -17,7 +17,8 @@ import util as _util
 
 with open('config.json') as _conf:
 	_CONFIG = _json.load(_conf)
-_G = _GoogleV3(_CONFIG['api_keys']['google_maps_geocoding'])
+_geocoder = _GoogleV3(_CONFIG['api_keys']['google_maps_geocoding'])
+_timezone_encoder = _GoogleV3(_CONFIG['api_keys']['google_maps_timezone'])
 
 
 def _get_filesize(file):
@@ -37,8 +38,8 @@ def _create_file_if_non_existent(filename):
 
 def time_at(*location):
 	try:
-		now = _datetime.now(tz=_G.timezone(location))
-	except:
+		now = _datetime.now(tz=_timezone_encoder.timezone(location))
+	except ValueError:
 		now = _datetime.utcnow()
 	return _datetime.strftime(now, '%Y-%m-%d %H:%M:%S UTC%z')
 
@@ -49,7 +50,7 @@ class Poster:
 	def __init__(self, title, location: str, text, author):
 		self.title = title
 		self.location = location
-		self.get_latlong()
+		self.lat, self.long = geocode(location)
 		self.text = text
 		self.author = author
 
@@ -57,13 +58,6 @@ class Poster:
 		self.token = _util.token_urlsafe()
 		self.date = self.time_here()
 		self.last_modified = None
-
-	def get_latlong(self):
-		result = _G.geocode(self.location)
-		if result is None:
-			raise InvalidLocationError
-		else:
-			self.lat, self.long = result.point[:2]
 
 	def distance(self, lat, long):
 		return _distance((self.lat, self.long), (lat, long))
@@ -197,7 +191,7 @@ def create_poster(**kwargs):
 	return p
 
 def geocode(location: str):
-	result = _G.geocode(location)
+	result = _geocoder.geocode(location)
 	if result is None:
 		raise InvalidLocationError
 	return result.point[:2]
