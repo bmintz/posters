@@ -108,6 +108,8 @@ def search():
 		request.args.get,
 		('location', 'radius', 'unit')
 	)
+	if location is None or radius is None:
+		abort(400)
 	radius = float(radius)
 	unit = request.args.get('unit')
 	try:
