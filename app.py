@@ -17,7 +17,12 @@ from flask import (
 )
 
 import poster
-from poster import InvalidPosterError, InvalidTokenError, PosterDeletedError
+from poster import (
+	InvalidPosterError,
+	InvalidTokenError,
+	PosterDeletedError,
+	InvalidLocationError,
+)
 
 app = Flask('digdug', static_url_path='/static')
 app.debug = False
@@ -79,7 +84,10 @@ def process_edit_request(id, token):
 		# go back home
 		return redirect(get_host_url())
 	form = request.form.to_dict(flat=True)
-	poster.db.edit(id=id, token=token, **form)
+	try:
+		poster.db.edit(id=id, token=token, **form)
+	except InvalidLocationError:
+		abort(400)
 	return redirect(get_host_url() + '/poster/%s' % id)
 
 def get_poster(id, token=None):
@@ -100,11 +108,14 @@ def search():
 	)
 	radius = float(radius)
 	unit = request.args.get('unit')
-	return render_template(
-		'search_results.html',
-		items=poster.db.search(location, radius, unit),
-		unit=unit,
-	)
+	try:
+		return render_template(
+			'search_results.html',
+			items=poster.db.search(location, radius, unit),
+			unit=unit,
+		)
+	except InvalidLocationError:
+		abort(400)
 
 
 def get_host_url():
