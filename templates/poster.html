@@ -6,6 +6,7 @@
 </head>
 <body>
 <div id="container">
+{% include 'octocat.html' %}
 	<header><h2>Poster</h2></header>
 	<h3>{{poster.title}}</h3>
 	{% from 'google_maps_link.html' import location_link %}

@@ -1,3 +1,17 @@
+#source {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	opacity: 0.1;
+	transition: opacity .5s ease-out;
+	-moz-transition: opacity .5s ease-out;
+	-webkit-transition: opacity .5s ease-out;
+}
+
+#source:hover {
+	opacity: 1;
+}
+
 #container {
 	max-width: 600px;
 	width: 100vw;
