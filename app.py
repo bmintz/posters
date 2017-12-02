@@ -37,6 +37,10 @@ def csrf_protect():
 		token = session.pop('_csrf_token', None)
 		if token is None or token != request.form.get('_csrf_token'):
 			abort(403)
+		else:
+			# don't pass the token along to the database
+			request.form = request.form.to_dict(flat=True)
+			request.form.pop('_csrf_token', None)
 
 
 def generate_csrf_token():
@@ -57,6 +61,7 @@ def view_poster(id):
 		poster=get_poster(int(id)),
 	)
 
+
 @app.route('/create', methods=('POST', 'GET'))
 def newpost():
 	if request.method == 'GET':
@@ -65,8 +70,11 @@ def newpost():
 
 	# by default each value in request.form is a list
 	# this gets only the first item from each
-	form = request.form.to_dict(flat=True)
-	p = poster.create_poster(**form)
+	#form = request.form.to_dict(flat=True)
+	try:
+		p = poster.create_poster(**request.form)
+	except InvalidLocationError:
+		abort(400)
 	session['tokens'].append(p.token)
 	session.modified = True
 	return redirect(get_host_url() + '/poster/{}'.format(p.id))
