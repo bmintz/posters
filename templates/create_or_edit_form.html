@@ -7,6 +7,7 @@
 		{% set text = poster.text %}
 	{% endif %}
 <form method="POST">
+	<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
 	<table>
 		<tr>
 			<td><label for="title">Title</label></td>

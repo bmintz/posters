@@ -23,13 +23,28 @@ from poster import (
 	PosterDeletedError,
 	InvalidLocationError,
 )
-from util import config
+from util import config, token_urlsafe
 
 app = Flask('digdug', static_url_path='/static')
 
 app.debug = config['debug']
 app.secret_key = config['secret_key']
 
+
+@app.before_request
+def csrf_protect():
+	if request.method == 'POST':
+		token = session.pop('_csrf_token', None)
+		if token is None or token != request.form.get('_csrf_token'):
+			abort(403)
+
+
+def generate_csrf_token():
+	if '_csrf_token' not in session:
+		session['_csrf_token'] = token_urlsafe()
+	return session['_csrf_token']
+
+app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 @app.route('/index')
 def index():
