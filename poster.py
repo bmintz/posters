@@ -197,7 +197,10 @@ def create_poster(**kwargs):
 	return p
 
 def geocode(location: str):
-	result = _geocoder.geocode(location)
+	try:
+		result = _geocoder.geocode(location)
+	except:
+		raise InvalidLocationError
 	if result is None:
 		raise InvalidLocationError
 	return result.point[:2]
