@@ -25,7 +25,7 @@ header {
 	border-style: outset;
 }
 
-header p {
+header p, #deletion-text {
 	font-style: italic;
 }
 
@@ -54,7 +54,7 @@ label {
 	display: inline;
 }
 
-label:not(.no-label-br):after {
+label:not(.no-label-br):after, #deletion-text:after {
 	content: "\a"; /* newline */
 	white-space: pre;
 }
