@@ -23,6 +23,10 @@
 	{% if ns.owns_poster %}
 		<a href="/edit/{{poster.id}}?token={{poster.token}}">Edit this poster</a>
 	{% endif %}
+	<!-- for legal reasons -->
+	If this poster violates the law, you may
+	<a href="mailto:content@posters.win?subject=Poster%20%23{{poster.id}}%20deletion%20request&body=Poster%20%23{{poster.id}}%20({{poster.title}})%20violates%20the%20law.%20I%20hereby%20request%20its%20deletion.%0A&lt;Please%20specify%20whether%20you%20are%20the%20copyright%20owner,%20or%20if%20this%20poster%20generally%20violates%20the%20law%20(e.g.%20it's%20pornographic%20or%20depicts%20child%20abuse)&gt;">
+	request its deletion</a>.<br>
 	{% import 'buttons.html' as buttons %}
 	{{ buttons.back() }}
 </div>
