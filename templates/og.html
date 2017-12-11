@@ -1,8 +1,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="{{poster.title}} — Posters">
 <meta property="og:site_name" content="Posters">
-{# <meta property="og:url" content="{{request.headers.get('X-URI')+request.path}}"> #}
-<meta property="og:url" content="{{'https://posters.win/'+request.path}}">
+<meta property="og:url" content="{{request.headers.get('X-URI')+request.path}}">
 {# TODO display dates in ISO 8601 format #}
 <meta property="article:published_time" content="{{poster.date}}">
 {% if poster.last_modified is not sameas None %}
