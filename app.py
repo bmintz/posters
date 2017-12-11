@@ -30,6 +30,9 @@ app = Flask('digdug', static_url_path='/static')
 app.debug = config['debug']
 app.secret_key = config['secret_key']
 
+app.jinja_env.trim_blocks = True
+app.jinja_env.lstrip_blocks = True
+
 
 @app.before_request
 def csrf_protect():
