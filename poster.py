@@ -68,17 +68,20 @@ class Poster(db.Model):
 		return result.point[:2]
 
 
-class InvalidTokenError(Exception):
+class PosterException(Exception):
 	pass
 
-class InvalidPosterError(Exception):
+class InvalidTokenError(PosterException):
 	pass
 
-class PosterExistsError(Exception):
+class InvalidPosterException(PosterException):
 	pass
 
-class PosterDeletedError(Exception):
+class PosterExistsError(PosterException):
 	pass
 
-class InvalidLocationError(Exception):
+class PosterDeletedError(PosterException):
+	pass
+
+class InvalidLocationError(PosterException):
 	pass
