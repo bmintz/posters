@@ -6,6 +6,7 @@ import copy as _copy
 from datetime import datetime as _datetime
 import pickle as _pickle
 
+from flask_sqlalchemy import SQLAlchemy
 from geopy.exc import GeopyError as _GeopyError
 from geopy.distance import distance as _distance
 from geopy.geocoders import GoogleV3 as _GoogleV3
@@ -18,191 +19,54 @@ import util as _util
 _geocoder = _GoogleV3(config['api_keys']['google_maps_geocoding'])
 _timezone_encoder = _GoogleV3(config['api_keys']['google_maps_timezone'])
 
+db = SQLAlchemy()
 
-def _get_filesize(file):
-	old_pos = file.tell()
-	file.seek(0, 2) # seek to the end of the file
-	size = file.tell() # current position
-	file.seek(old_pos) # go back to the beginning
-	return size
+class Poster(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(280), nullable=False)
+	location = db.Column(db.String(128), nullable=False)
+	lat = db.Column(db.Float, db.FetchedValue(), nullable=False)
+	long = db.Column(db.Float, db.FetchedValue(), nullable=False)
+	text = db.Column(db.Text, nullable=True)
+	author = db.Column(db.String(128), nullable=False)
+	date = db.Column(
+		db.Date,
+		server_default=self.now,
+		db.FetchedValue(),
+		nullable=False
+	)
+	last_modified = db.Column(
+		db.Date,
+		server_default=self.now,
+		onupdate=self.now,
+		db.FetchedValue(),
+		nullable=True
+	)
 
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
+		self.geocode()
 
-def _create_file_if_non_existent(filename):
-	try:
-		return open(filename, 'ab')
-	except FileNotFoundError:
-		return open(filename, 'xb')
-
-
-def time_at(*location):
-	try:
-		now = _datetime.now(tz=_timezone_encoder.timezone(location))
-	except _GeopyError:
-		now = _datetime.utcnow()
-	timezone = _datetime.strftime(now, '%Z')
-	if not timezone:
-		timezone = 'UTC'
-	return _datetime.strftime(now, '%Y-%m-%d %H:%M:%S ' + timezone)
-
-
-class Poster:
-	fields = ['title', 'text', 'lat', 'long', 'location', 'author', 'date', 'last_modified']
-
-	def __init__(self, title, location: str, text, author):
-		self.title = title
-		self.location = location
-		self.update_location()
-		self.text = text
-		self.author = author
-
-		self.id = len(db)
-		self.token = _util.token_urlsafe()
-		self.date = self.time_here()
-		self.last_modified = None
-
-	def distance(self, lat, long):
-		return _distance((self.lat, self.long), (lat, long))
-
-	def time_here(self):
-		return time_at(self.lat, self.long)
-
-	def validate(self, token=None):
-		if token is not None:
-			return token == self.token
-		return True
-
-	def update_location(self):
+	def geocode(self):
 		self.lat, self.long = geocode(self.location)
 
-	def edit(self, **kwargs):
-		if not self.validate(kwargs['token']):
-			raise InvalidTokenError
-		for field in self.fields:
-			new_val = kwargs.get(field)
-			if new_val is not None:
-				setattr(self, field, new_val)
-		self.update_location()
-		self.last_modified = self.time_here()
-
-	def as_dict(self):
-		d = {}
-		for field, value in zip(self.fields, iter(self)):
-			d[field] = value
-		d.update({
-			'token': self.token,
-			'id': self.id,
-		})
-		return d
-
-	@classmethod
-	def from_dict(cls, d):
-		p = Poster(
-			**{k: d[k] for k in set(cls.fields) - {'date', 'last_modified'}}
-		)
-		# since these fields are generated automatically by __init__,
-		# we have to set them ourselves
-		p.id = d['id']
-		p.token = d['token']
-		p.date = d['date']
-		p.last_modified = d['last_modified']
-
-		return p
-
-	def __iter__(self):
-		yield from map(self.__getattribute__, self.fields)
-
-class Database(dict):
-	def __init__(self, filename='../db.pickle'):
-		self.filename = filename
-
-		self._initialize_db_if_nonexistent()
-		with open(filename, 'rb') as db_file:
-			self.update(_pickle.load(db_file))
-
-	def _initialize_db_if_nonexistent(self):
-		file = _create_file_if_non_existent(self.filename)
-		with file:
-			if _get_filesize(file) == 0:
-				_pickle.dump({}, file)
-
-	def get_poster(self, id, token=None):
-		"""return a Poster object corresponding to the id.
-		If token is passed, validate that token against the database.
-		If the token is invalid, raise InvalidTokenError"""
+	def now(self):
 		try:
-			poster = self[id]
-		except KeyError:
-			raise InvalidPosterError
-		else:
-			if poster is None:
-				raise PosterDeletedError
-			elif poster.validate(token):
-				return poster
-			else:
-				raise InvalidTokenError
+			return _datetime.now(
+				tz=_timezone_encoder.timezone(self.lat, self.long)
+			)
+		except _GeopyError:
+			return _datetime.utcnow()
 
-	def values(self):
-		for poster in super().values():
-			if poster is not None:
-				yield poster
+	def geocode(self, location):
+		try:
+			result = _geocoder.geocode(location)
+		except:
+			raise InvalidLocationError
+		if result is None:
+			raise InvalidLocationError
+		return result.point[:2]
 
-	def search(self, location, radius, unit):
-		lat, long = geocode(location)
-		for poster in self.values():
-			distance = getattr(poster.distance(lat, long), unit)
-			if distance <= radius:
-				# don't overwrite the .distance method in place
-				poster = _copy.deepcopy(poster)
-				poster.distance = round(distance, 2)
-				poster.unit = unit
-				yield poster
-
-	def edit(self, **kwargs):
-		id = kwargs['id']
-		token = kwargs['token']
-		if id in self:
-			poster = self.get_poster(id)
-		else:
-			raise InvalidPosterError
-
-		if poster.validate(token):
-			poster.edit(**kwargs)
-			self[id] = poster
-		else:
-			raise InvalidTokenError
-
-		self.save()
-
-	def save(self):
-		with open(self.filename, 'wb') as f:
-			# not sure why i have to do this
-			_pickle.dump(_copy.deepcopy(self), f)
-
-	def __delitem__(self, id):
-		self[id] = None
-		self.save()
-
-	def add(self, poster):
-		if poster.id in self:
-			raise PosterExistsError
-		self[poster.id] = poster
-		self.save()
-
-db = Database()
-
-def create_poster(**kwargs):
-	p = Poster(**kwargs)
-	db.add(p)
-	return p
-
-def geocode(location: str):
-	try:
-		result = _geocoder.geocode(location)
-	except:
-		raise InvalidLocationError
-	if result is None:
-		raise InvalidLocationError
-	return result.point[:2]
 
 class InvalidTokenError(Exception):
 	pass
