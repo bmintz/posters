@@ -4,7 +4,6 @@
 from collections import namedtuple as _namedtuple
 import copy as _copy
 from datetime import datetime as _datetime
-import json as _json
 import pickle as _pickle
 
 from geopy.exc import GeopyError as _GeopyError
