@@ -1,0 +1,31 @@
+localhost:2017
+
+header / Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+header / X-Clacks-Overhead "GNU Terry Pratchett"
+
+ext .html
+root static
+
+proxy /index localhost:5000 {
+	header_upstream X-URI {scheme}://{host}
+}
+proxy /poster localhost:5000 {
+	header_upstream X-URI {scheme}://{host}
+}
+proxy /create localhost:5000 {
+	header_upstream X-URI {scheme}://{host}
+}
+proxy /edit localhost:5000 {
+	header_upstream X-URI {scheme}://{host}
+}
+proxy /search localhost:5000 {
+	header_upstream X-URI {scheme}://{host}
+} 
+
+rewrite / {
+	if {path} is /
+	to /index
+}
+
+# easter egg, temp redirect
+redir /poster/8 /saelee 302
