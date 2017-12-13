@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
+<head prefix="og: http://ogp.me/ns#">
 	<meta charset=utf-8>
 	<title>Posters!</title>
-	<link rel="stylesheet" href="/css/styles.css" type="text/css" />
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="Posters">
+	{% set base = request.headers.get('X-URI') %}
+	<meta property="og:url" content="{{ base }}">
+	<meta property="og:image" content="{{ base }}/img/1x1.png">
+	<link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 <body>
 <div id="container">
-{% include 'octocat.html' %}
+	{% include 'octocat.html' %}
 	<header>
 		<h1>Posters!</h1>
 		<p>A Posterboard Website</p>
-		{% if request.headers.get('X-URI') in ['https://posters.win', 'https://www.posters.win'] %}
+		{% if base in ['https://posters.win', 'https://www.posters.win'] %}
 			<p><a href="http://posters2ume5oohj.onion">Now available as a Tor .onion service!</a></p>
 		{% endif %}
 	</header>
