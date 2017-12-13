@@ -14,6 +14,7 @@
 	{% from 'create_or_edit_form.html' import create_edit_form %}
 	{{ create_edit_form(poster) }}
 	<form method="POST">
+		{% include 'csrf.html' %}
 		<input type="hidden" name="delete" value="true">
 		<input type="submit" value="Delete this poster (cannot be undone!)">
 	</form>
