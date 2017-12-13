@@ -11,10 +11,10 @@
 	</tr>
 	{% for poster in posters %}
 		<tr>
-			<td><a href="/poster/{{poster.id}}">{{poster.title}}</a></td>
+			<td><a href="/poster/{{ poster.id }}">{{ poster.title }}</a></td>
 			<td>{{ location_link(poster) }}</td>
 			{% if unit %}
-				<td>{{poster.distance}} {{unit}}</td>
+				<td>{{ poster.distance }} {{ unit }}</td>
 			{% endif %}
 			<td>{{poster.author}}</td>
 			<td>{% include 'poster_date.html' %}</td>

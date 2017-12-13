@@ -4,5 +4,5 @@
 {% else %}
 	{% set location = 'View on the map' %}
 {% endif %}
-	<a href="https://www.google.com/maps/place/{{poster.lat}},{{poster.long}}">{{location}}</a>
+	<a href="https://www.google.com/maps/place/{{ poster.lat }},{{ poster.long }}">{{ location }}</a>
 {% endmacro %}

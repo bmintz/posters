@@ -8,7 +8,7 @@
 </head>
 <body>
 <div id="container">
-{% include 'octocat.html' %}
+	{% include 'octocat.html' %}
 	<header><h2>Poster</h2></header>
 	<h3>{{poster.title}}</h3>
 	{% from 'google_maps_link.html' import location_link %}
@@ -23,12 +23,12 @@
 		{% endif %}
 	{% endfor %}
 	{% if ns.owns_poster %}
-		<a href="/edit/{{poster.id}}?token={{poster.token}}">Edit this poster</a>
+		<a href="/edit/{{ poster.id }}?token={{ poster.token }}">Edit this poster</a>
 	{% endif %}
 	<!-- for legal reasons -->
 	<span id="deletion-text">
 		If this poster violates the law, you may
-		<a href="mailto:content@posters.win?subject=Poster %23{{poster.id}} deletion request&amp;body=Poster %23{{poster.id}} ({{poster.title}}) violates the law. I hereby request its deletion.%0A&lt;Please specify whether you are the copyright owner, or if this poster generally violates the law (e.g. it's pornographic or depicts child abuse)&gt;">
+		<a href="mailto:content@posters.win?subject=Poster %23{{ poster.id }} deletion request&amp;body=Poster %23{{ poster.id }} ({{ poster.title }}) violates the law. I hereby request its deletion.%0A&lt;Please specify whether you are the copyright owner, or if this poster generally violates the law (e.g. it's pornographic or depicts child abuse)&gt;">
 		request its deletion</a>.
 	</span>
 	{% import 'buttons.html' as buttons %}
