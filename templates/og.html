@@ -3,9 +3,13 @@
 <meta property="og:site_name" content="Posters">
 {% set base = request.headers.get('X-URI') %}
 <meta property="og:url" content="{{ base + request.path }}">
-{# TODO display dates in ISO 8601 format #}
+{# TODO display dates in ISO 8601 format (although it seems to work without) #}
 <meta property="article:published_time" content="{{ poster.date }}">
 {% if poster.last_modified is not sameas None %}
 	<meta property="article:modified_time" content="{{ poster.last_modified }}">
+{% endif %}
+{% if poster.text is not sameas None %}
+	{# spec says two sentence description #}
+	<meta property="og:description" content="{{ '\n'.join(poster.text.split(';')[:2]) }}">
 {% endif %}
 <meta property="og:image" content="{{ base + '/img/1x1.png' }}">
