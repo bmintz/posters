@@ -41,8 +41,10 @@ def csrf_protect():
 		if token is None or token != request.form.get('_csrf_token'):
 			abort(403)
 		else:
-			# don't pass the token along to the database
+			# by default each value in request.form is a list
+			# this gets only the first item from each
 			request.form = request.form.to_dict(flat=True)
+			# don't pass the token along to the database
 			request.form.pop('_csrf_token', None)
 
 
@@ -71,8 +73,6 @@ def newpost():
 		return render_template('create.html')
 	session['tokens'] = session.get('tokens', [])
 
-	# by default each value in request.form is a list
-	# this gets only the first item from each
 	#form = request.form.to_dict(flat=True)
 	try:
 		p = poster.create_poster(**request.form)
@@ -105,7 +105,6 @@ def process_edit_request(id, token):
 		del poster.db[id]
 		# go back home
 		return redirect(get_host_url())
-	form = request.form.to_dict(flat=True)
 	try:
 		poster.db.edit(id=id, token=token, **form)
 	except InvalidLocationError:
