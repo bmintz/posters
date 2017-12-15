@@ -81,7 +81,7 @@ def newpost():
 		abort(400)
 	session['tokens'].append(p.token)
 	session.modified = True
-	return redirect(get_host_url() + '/poster/{}'.format(p.id))
+	return redirect(get_host_url() + '/poster/%s' % p.id)
 
 
 @app.route('/edit/<id>', methods=('POST', 'GET'))
@@ -107,7 +107,7 @@ def process_edit_request(id, token):
 		# go back home
 		return redirect(get_host_url())
 	try:
-		poster.db.edit(id=id, token=token, **form)
+		poster.db.edit(id=id, token=token, **request.form)
 	except InvalidLocationError:
 		abort(400)
 	return redirect(get_host_url() + '/poster/%s' % id)
