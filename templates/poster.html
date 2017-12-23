@@ -17,7 +17,7 @@
 	<!-- since this el has white-space: pre on it, don't indent -->
 	<p id="user-text">{{poster.text}}</p>
 	{% if owns_poster %}
-		<a href="/edit/{{ poster.id }}?token={{ poster.token }}">Edit this poster</a>
+		<a href="/edit/{{ poster.id }}?token={{ poster.token }}">Edit this poster</a><br>
 	{% endif %}
 	<!-- for legal reasons -->
 	<span id="deletion-text">
