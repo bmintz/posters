@@ -16,13 +16,7 @@
 	Posted by {{poster.author}} on {% include 'poster_date.html' %}<br>
 	<!-- since this el has white-space: pre on it, don't indent -->
 	<p id="user-text">{{poster.text}}</p>
-	{% set ns = namespace(owns_poster = false) %}
-	{% for token in session['tokens'] %}
-		{% if poster.validate(token) %}
-			{% set ns.owns_poster = True %}
-		{% endif %}
-	{% endfor %}
-	{% if ns.owns_poster %}
+	{% if owns_poster %}
 		<a href="/edit/{{ poster.id }}?token={{ poster.token }}">Edit this poster</a>
 	{% endif %}
 	<!-- for legal reasons -->

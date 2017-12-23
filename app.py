@@ -35,6 +35,11 @@ app.jinja_env.lstrip_blocks = True
 
 
 @app.before_request
+def setup_tokens():
+	session.setdefault('tokens', [])
+
+
+@app.before_request
 def csrf_protecc():
 	if request.method == 'POST':
 		token = session.pop('_csrf_token', None)
@@ -56,15 +61,26 @@ def generate_csrf_token():
 
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
+
 @app.route('/index')
 def index():
 	return render_template('index.html', posters=poster.db.values())
 
+
 @app.route('/poster/<id>')
 def view_poster(id):
+	poster = get_poster(int(id))
+	owns_poster = False
+
+	for token in session['tokens']:
+		if poster.validate(token):
+			owns_poster = True
+			break
+
 	return render_template(
 		'poster.html',
-		poster=get_poster(int(id)),
+		poster=poster,
+		owns_poster=owns_poster,
 	)
 
 
@@ -72,9 +88,7 @@ def view_poster(id):
 def newpost():
 	if request.method == 'GET':
 		return render_template('create.html')
-	session['tokens'] = session.get('tokens', [])
 
-	#form = request.form.to_dict(flat=True)
 	try:
 		p = poster.create_poster(**request.form)
 	except InvalidLocationError:
