@@ -112,7 +112,7 @@ class Poster:
 		yield from map(self.__getattribute__, self.fields)
 
 class Database(dict):
-	def __init__(self, filename='../db.pickle'):
+	def __init__(self, filename='db.pickle'):
 		self.filename = filename
 
 		self._initialize_db_if_nonexistent()

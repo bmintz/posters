@@ -6,3 +6,4 @@ __pycache__/
 .c9/
 *.json
 !*example.json
+db.pickle
