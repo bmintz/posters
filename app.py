@@ -67,9 +67,9 @@ def index():
 	return render_template('index.html', posters=poster.db.values())
 
 
-@app.route('/poster/<id>')
+@app.route('/poster/<int:id>')
 def view_poster(id):
-	poster = get_poster(int(id))
+	poster = get_poster(id)
 	owns_poster = False
 
 	for token in session['tokens']:
@@ -98,9 +98,8 @@ def newpost():
 	return redirect(get_poster_url(p.id))
 
 
-@app.route('/edit/<id>', methods=('POST', 'GET'))
+@app.route('/edit/<int:id>', methods=('POST', 'GET'))
 def edit(id):
-	id = int(id)
 	token = request.args.get('token')
 	if request.method == 'GET' and 'token' in request.args:
 		return render_template('edit.html', poster=get_poster(id, token))
