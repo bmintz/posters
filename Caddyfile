@@ -1,6 +1,5 @@
 localhost:2017
 
-header / Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 header / X-Clacks-Overhead "GNU Terry Pratchett"
 
 ext .html
@@ -26,6 +25,3 @@ rewrite / {
 	if {path} is /
 	to /index
 }
-
-# easter egg, temp redirect
-redir /poster/8 /saelee 302
