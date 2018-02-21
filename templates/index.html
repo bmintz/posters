@@ -1,77 +1,167 @@
 <!DOCTYPE html>
 <html lang="en-us">
+
 <head prefix="og: http://ogp.me/ns#">
 	<meta charset=utf-8>
 	<title>Posters!</title>
 	<meta property="og:type" content="website">
 	<meta property="og:title" content="Posters">
-	<meta property="og:description" content="Hang up virtual posters at any location">
-	{% set base = request.headers.get('X-URI') %}
+	<meta property="og:description" content="Hang up virtual posters at any location"> {% set base = request.headers.get('X-URI') %}
 	<meta property="og:url" content="{{ base }}">
 	<meta property="og:image" content="{{ base }}/img/1x1.png">
-	<link rel="stylesheet" href="/css/styles.css" type="text/css">
-</head>
-<body>
-<div id="container">
-	{% include 'octocat.html' %}
-	<header>
-		<h1>Posters!</h1>
-		<p>A Posterboard Website</p>
-		{% if base in ['https://posters.win', 'https://www.posters.win'] %}
-			<p><a href="http://posters2ume5oohj.onion">Now available as a Tor .onion service!</a></p>
-		{% endif %}
-	</header>
-	<h2><a href="/create">Hang up a new poster</a></h2>
-	<h2>Search</h2>
-	<form action="/search">
-		<table>
-			{% include 'location_input.html' %}
-			<tr>
-				<td><label for="radius" class="no-label-br">Search radius</label></td>
-				<td>
-					<input type="number" step="0.0001" name="radius" required>
-					<select name="unit">
-						<option value="km">Kilometers</option>
-						<option value="mi">Miles</option>
-						<option value="m">Meters</option>
-						<option value="feet">Feet</option>
-						<!-- we respect sailors around here too -->
-						<option value="nm">Nautical Miles</option>
-					</select>
-				</td>
-			</tr>
-		</table>
-		<input type="submit" value="Search"/>
-	</form>
-	<h2>All Posters</h2>
-	{% include 'poster_list.html' %}
-	<h2>Source Code/License</h2>
-	You may find the source code
-	<a href="https://github.com/bmintz/posters">on GitHub</a>.
-	Pull requests are appreciated!
-	<div id="license">
-		<p>
-			Posters.win&mdash;create virtual posters tied to a location<br>
-			Copyright &copy; 2017 Benjamin Mintz
-		</p>
-		<p>
-			This program is free software: you can redistribute it and/or modify
-			it under the terms of the GNU Affero General Public License as
-			published by the Free Software Foundation, version 3 of the License only.
-		</p>
-		<p>
-			This program is distributed in the hope that it will be useful,
-			but WITHOUT ANY WARRANTY; without even the implied warranty of
-			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-			GNU Affero General Public License for more details.
-		</p>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+	<style>
+		.dropdown-content li>a,
+		.dropdown-content li>span {
+			color: black;
+		}
 
-		<p>
-			You should have received a copy of the GNU Affero General Public License
-			along with this program. If not, see
-			<a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.
-		</p>
-	</div>
-</div>
+		input:not([type]):focus:not([readonly]),
+		input[type=text]:not(.browser-default):focus:not([readonly]),
+		input[type=password]:not(.browser-default):focus:not([readonly]),
+		input[type=email]:not(.browser-default):focus:not([readonly]),
+		input[type=url]:not(.browser-default):focus:not([readonly]),
+		input[type=time]:not(.browser-default):focus:not([readonly]),
+		input[type=date]:not(.browser-default):focus:not([readonly]),
+		input[type=datetime]:not(.browser-default):focus:not([readonly]),
+		input[type=datetime-local]:not(.browser-default):focus:not([readonly]),
+		input[type=tel]:not(.browser-default):focus:not([readonly]),
+		input[type=number]:not(.browser-default):focus:not([readonly]),
+		input[type=search]:not(.browser-default):focus:not([readonly]),
+		textarea.materialize-textarea:focus:not([readonly]) {
+			border-bottom: 1px solid #5c6bc0;
+			-webkit-box-shadow: 0 1px 0 0 #5c6bc0;
+			box-shadow: 0 1px 0 0 #5c6bc0;
+		}
+
+		input:not([type]):focus:not([readonly])+label,
+		input[type=text]:not(.browser-default):focus:not([readonly])+label,
+		input[type=password]:not(.browser-default):focus:not([readonly])+label,
+		input[type=email]:not(.browser-default):focus:not([readonly])+label,
+		input[type=url]:not(.browser-default):focus:not([readonly])+label,
+		input[type=time]:not(.browser-default):focus:not([readonly])+label,
+		input[type=date]:not(.browser-default):focus:not([readonly])+label,
+		input[type=datetime]:not(.browser-default):focus:not([readonly])+label,
+		input[type=datetime-local]:not(.browser-default):focus:not([readonly])+label,
+		input[type=tel]:not(.browser-default):focus:not([readonly])+label,
+		input[type=number]:not(.browser-default):focus:not([readonly])+label,
+		input[type=search]:not(.browser-default):focus:not([readonly])+label,
+		textarea.materialize-textarea:focus:not([readonly])+label {
+			color: #5c6bc0;
+		}
+	</style>
+</head>
+
+
+<body>
+	<main>
+		<div class="container">
+			<div class="row">
+				<div class="card col s8 offset-s2 indigo lighten-1">
+					<div>
+						<div class="card-content white-text">
+							<span class="card-title">Posters!</span>
+							<p>A Posterboard Website</p>
+						</div>
+						<div class="card-action">
+							<p>
+								<a href="http://posters2ume5oohj.onion">Now available as a Tor .onion service!</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<a class="col s8 offset-s2 waves-effect waves-light btn-large indigo lighten-1" href="/create">Hang up a new poster</a>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<form class="col s8 offset-s2" action="/search">
+					<div class="row">
+						<div class="col s12">
+							<h5>Search</h5>
+						</div>
+						<div class="input-field col s6">
+							<input placeholder="(address, zip code, or the name of a point of interest)" name="location" type="text" value="{{ location }}"
+							 required>
+							<label class="active" for="location">Location</label>
+						</div>
+						<div class="input-field col s3">
+							<input type="number" step="0.0001" name="radius" required>
+							<label class="active" for="radius">Search radius</label>
+						</div>
+						<div class="input-field col s3">
+							<select name="unit">
+								<option value="" disabled selected> </option>
+								<option value="km">Kilometers</option>
+								<option value="mi">Miles</option>
+								<option value="m">Meters</option>
+								<option value="feet">Feet</option>
+								<!-- we respect sailors around here too -->
+								<option value="nm">Nautical Miles</option>
+							</select>
+						</div>
+					</div>
+					<button class="waves-effect waves-light btn indigo lighten-1" type="submit">Search</button>
+				</form>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col s8 offset-s2">
+					<h5 class="black-text">All Posters</h5>
+				</div>
+				<div class="col s8 offset-s2">
+					{% include 'poster_list.html' %}
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="page-footer indigo lighten-1">
+		<div class="container">
+			<div class="row">
+				<div class="col s8 offset-s2">
+					<h5 class="white-text">Source Code/License</h5>
+					<p>
+						This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public
+						License as published by the Free Software Foundation, version 3 of the License only.</p>
+					<p>
+						This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+						of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.</p>
+					<p>
+						You should have received a copy of the GNU Affero General Public License along with this program. If not, see
+						<a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer-copyright indigo">
+			<div class="container">
+				<div class="row">
+					<p class="col s4 offset-s2">Posters.win &mdash; create virtual posters tied to a location
+						<br> Copyright &copy; 2017 Benjamin Mintz</p>
+					<p class="col s4 offset-s2">You may find the source code
+						<a href="https://github.com/bmintz/posters">on GitHub</a>.
+						<br> Pull requests are appreciated!</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<script>
+		$(document).ready(function () {
+			$('select').material_select();
+		});
+	</script>
 </body>
+
 </html>
