@@ -1,31 +1,33 @@
 {% from 'google_maps_link.html' import location_link %}
-<table class="list">
-	<tr>
-		<th>Title</th>
-		<th>Location</th>
-		{% if unit %}{# then we're displaying distances #}
-			<th>Distance to you</th>
-		{% endif %}
-		<th>Author</th>
-		<th>Date published</th>
-	</tr>
-	{% for poster in posters %}
+<table class="striped centered">
+	<thead>
 		<tr>
-			<td><a href="/poster/{{ poster.id }}">{{ poster.title }}</a></td>
+			<th>Title</th>
+			<th>Location</th>
+			{% if unit %}{# then we're displaying distances #}
+				<th>Distance to you</th>
+			{% endif %}
+			<th>Author</th>
+			<th>Date published</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for poster in posters %}
+		<tr>
+			<td>
+				<a href="/poster/{{ poster.id }}">{{ poster.title }}</a>
+			</td>
 			<td>{{ location_link(poster) }}</td>
 			{% if unit %}
-				<td>{{ poster.distance }} {{ unit }}</td>
+			<td>{{ poster.distance }} {{ unit }}</td>
 			{% endif %}
 			<td>{{poster.author}}</td>
 			<td>{% include 'poster_date.html' %}</td>
 		</tr>
-	{% else %}
+		{% else %}
 		<tr>
-			{% set colspan = 4 %}
-			{% if unit %}
-				{% set colspan = colspan + 1%}
-			{% endif %}
+			{% set colspan = 4 %} {% if unit %} {% set colspan = colspan + 1%} {% endif %}
 			<td colspan="{{colspan}}">No posters found.</td>
 		</tr>
-	{% endfor %}
+		{% endfor %}
 </table>
